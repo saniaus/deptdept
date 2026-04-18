@@ -1,6 +1,6 @@
 import { db } from '@/lib/db'
 
-export async function POST(req: Request) {
+export async function POST(req) {
   const { installmentId, debtId } = await req.json()
 
   const { data } = await db
@@ -9,9 +9,7 @@ export async function POST(req: Request) {
     .eq('id', installmentId)
     .single()
 
-  if (!data || data.is_paid) {
-    return new Response('Invalid / already paid', { status: 400 })
-  }
+  if (data.is_paid) return new Response('Already paid', { status: 400 })
 
   await db.from('installments')
     .update({ is_paid: true })
