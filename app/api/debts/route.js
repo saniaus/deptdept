@@ -6,7 +6,7 @@ export async function GET() {
   return Response.json(data)
 }
 
-export async function POST(req: Request) {
+export async function POST(req) {
   const body = await req.json()
 
   const installmentAmount = Math.ceil(body.totalAmount / body.tenor)
@@ -24,8 +24,8 @@ export async function POST(req: Request) {
 
   const installments = generateInstallments(
     body.startDate,
-    Number(body.dayOfMonth),
-    Number(body.tenor),
+    body.dayOfMonth,
+    body.tenor,
     installmentAmount
   ).map(i => ({
     ...i,
@@ -37,7 +37,7 @@ export async function POST(req: Request) {
   return Response.json({ ok: true })
 }
 
-export async function DELETE(req: Request) {
+export async function DELETE(req) {
   const { id } = await req.json()
   await db.from('debts').delete().eq('id', id)
   return Response.json({ ok: true })
